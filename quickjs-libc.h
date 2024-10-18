@@ -33,27 +33,37 @@
 extern "C" {
 #endif
 
-JSModuleDef *js_init_module_std(JSContext *ctx, const char *module_name);
-JSModuleDef *js_init_module_os(JSContext *ctx, const char *module_name);
-JSModuleDef *js_init_module_bjson(JSContext *ctx, const char *module_name);
-void js_std_add_helpers(JSContext *ctx, int argc, char **argv);
-JSValue js_std_loop(JSContext *ctx);
-JSValue js_std_await(JSContext *ctx, JSValue obj);
-void js_std_init_handlers(JSRuntime *rt);
-void js_std_free_handlers(JSRuntime *rt);
-void js_std_dump_error(JSContext *ctx);
-void js_std_dump_error1(JSContext *ctx, JSValue exception_val);
-uint8_t *js_load_file(JSContext *ctx, size_t *pbuf_len, const char *filename);
-int js_module_set_import_meta(JSContext *ctx, JSValue func_val,
+#if defined(__GNUC__) || defined(__clang__)
+#define js_force_inline       inline __attribute__((always_inline))
+#define __js_printf_like(f, a)   __attribute__((format(printf, f, a)))
+#define JS_EXTERN __attribute__((visibility("default")))
+#else
+#define js_force_inline  inline
+#define __js_printf_like(a, b)
+#define JS_EXTERN __declspec(dllexport) /* nothing */
+#endif
+
+JS_EXTERN JSModuleDef *js_init_module_std(JSContext *ctx, const char *module_name);
+JS_EXTERN JSModuleDef *js_init_module_os(JSContext *ctx, const char *module_name);
+JS_EXTERN JSModuleDef *js_init_module_bjson(JSContext *ctx, const char *module_name);
+JS_EXTERN void js_std_add_helpers(JSContext *ctx, int argc, char **argv);
+JS_EXTERN JSValue js_std_loop(JSContext *ctx);
+JS_EXTERN JSValue js_std_await(JSContext *ctx, JSValue obj);
+JS_EXTERN void js_std_init_handlers(JSRuntime *rt);
+JS_EXTERN void js_std_free_handlers(JSRuntime *rt);
+JS_EXTERN void js_std_dump_error(JSContext *ctx);
+JS_EXTERN void js_std_dump_error1(JSContext *ctx, JSValue exception_val);
+JS_EXTERN uint8_t *js_load_file(JSContext *ctx, size_t *pbuf_len, const char *filename);
+JS_EXTERN int js_module_set_import_meta(JSContext *ctx, JSValue func_val,
                               JS_BOOL use_realpath, JS_BOOL is_main);
-JSModuleDef *js_module_loader(JSContext *ctx,
+JS_EXTERN JSModuleDef *js_module_loader(JSContext *ctx,
                               const char *module_name, void *opaque);
-void js_std_eval_binary(JSContext *ctx, const uint8_t *buf, size_t buf_len,
+JS_EXTERN void js_std_eval_binary(JSContext *ctx, const uint8_t *buf, size_t buf_len,
                         int flags);
-void js_std_promise_rejection_tracker(JSContext *ctx, JSValue promise,
+JS_EXTERN void js_std_promise_rejection_tracker(JSContext *ctx, JSValue promise,
                                       JSValue reason,
                                       JS_BOOL is_handled, void *opaque);
-void js_std_set_worker_new_context_func(JSContext *(*func)(JSRuntime *rt));
+JS_EXTERN void js_std_set_worker_new_context_func(JSContext *(*func)(JSRuntime *rt));
 
 #ifdef __cplusplus
 } /* extern "C" { */
