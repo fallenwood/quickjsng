@@ -54,6 +54,16 @@ extern "C" {
 #include <pthread.h>
 #endif
 
+#if defined(__GNUC__) || defined(__clang__)
+#define js_force_inline       inline __attribute__((always_inline))
+#define __js_printf_like(f, a)   __attribute__((format(printf, f, a)))
+#define JS_EXTERN __attribute__((visibility("default")))
+#else
+#define js_force_inline  inline
+#define __js_printf_like(a, b)
+#define JS_EXTERN __declspec(dllexport) /* nothing */
+#endif
+
 #if defined(_MSC_VER) && !defined(__clang__)
 #  define likely(x)       (x)
 #  define unlikely(x)     (x)
@@ -125,10 +135,10 @@ enum {
 };
 #endif
 
-void pstrcpy(char *buf, int buf_size, const char *str);
-char *pstrcat(char *buf, int buf_size, const char *s);
-int strstart(const char *str, const char *val, const char **ptr);
-int has_suffix(const char *str, const char *suffix);
+JS_EXTERN void pstrcpy(char *buf, int buf_size, const char *str);
+JS_EXTERN char *pstrcat(char *buf, int buf_size, const char *s);
+JS_EXTERN int strstart(const char *str, const char *val, const char **ptr);
+JS_EXTERN int has_suffix(const char *str, const char *suffix);
 
 static inline uint8_t is_be(void) {
     union {
@@ -585,19 +595,19 @@ typedef pthread_mutex_t js_mutex_t;
 typedef pthread_cond_t js_cond_t;
 #endif
 
-void js_once(js_once_t *guard, void (*callback)(void));
+JS_EXTERN void js_once(js_once_t *guard, void (*callback)(void));
 
-void js_mutex_init(js_mutex_t *mutex);
-void js_mutex_destroy(js_mutex_t *mutex);
-void js_mutex_lock(js_mutex_t *mutex);
-void js_mutex_unlock(js_mutex_t *mutex);
+JS_EXTERN void js_mutex_init(js_mutex_t *mutex);
+JS_EXTERN void js_mutex_destroy(js_mutex_t *mutex);
+JS_EXTERN void js_mutex_lock(js_mutex_t *mutex);
+JS_EXTERN void js_mutex_unlock(js_mutex_t *mutex);
 
-void js_cond_init(js_cond_t *cond);
-void js_cond_destroy(js_cond_t *cond);
-void js_cond_signal(js_cond_t *cond);
-void js_cond_broadcast(js_cond_t *cond);
-void js_cond_wait(js_cond_t *cond, js_mutex_t *mutex);
-int js_cond_timedwait(js_cond_t *cond, js_mutex_t *mutex, uint64_t timeout);
+JS_EXTERN void js_cond_init(js_cond_t *cond);
+JS_EXTERN void js_cond_destroy(js_cond_t *cond);
+JS_EXTERN void js_cond_signal(js_cond_t *cond);
+JS_EXTERN void js_cond_broadcast(js_cond_t *cond);
+JS_EXTERN void js_cond_wait(js_cond_t *cond, js_mutex_t *mutex);
+JS_EXTERN int js_cond_timedwait(js_cond_t *cond, js_mutex_t *mutex, uint64_t timeout);
 
 #endif /* !defined(EMSCRIPTEN) && !defined(__wasi__) */
 

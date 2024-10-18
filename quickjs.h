@@ -43,7 +43,7 @@ extern "C" {
 #else
 #define js_force_inline  inline
 #define __js_printf_like(a, b)
-#define JS_EXTERN /* nothing */
+#define JS_EXTERN __declspec(dllexport) /* nothing */
 #endif
 
 #define JS_BOOL int
