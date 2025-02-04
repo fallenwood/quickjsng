@@ -118,10 +118,18 @@ extern "C" {
 #endif
 #endif
 
-void js__pstrcpy(char *buf, int buf_size, const char *str);
-char *js__pstrcat(char *buf, int buf_size, const char *s);
-int js__strstart(const char *str, const char *val, const char **ptr);
-int js__has_suffix(const char *str, const char *suffix);
+#if defined(__GNUC__) || defined(__clang__)
+#define js_force_inline       inline __attribute__((always_inline))
+#define JS_EXTERN __attribute__((visibility("default")))
+#else
+#define js_force_inline  inline
+#define JS_EXTERN /* nothing */
+#endif
+
+JS_EXTERN void js__pstrcpy(char *buf, int buf_size, const char *str);
+JS_EXTERN char *js__pstrcat(char *buf, int buf_size, const char *s);
+JS_EXTERN int js__strstart(const char *str, const char *val, const char **ptr);
+JS_EXTERN int js__has_suffix(const char *str, const char *suffix);
 
 static inline uint8_t is_be(void) {
     union {
@@ -532,21 +540,21 @@ static inline uint8_t to_upper_ascii(uint8_t c) {
 }
 
 extern char const digits36[36];
-size_t u32toa(char buf[minimum_length(11)], uint32_t n);
-size_t i32toa(char buf[minimum_length(12)], int32_t n);
-size_t u64toa(char buf[minimum_length(21)], uint64_t n);
-size_t i64toa(char buf[minimum_length(22)], int64_t n);
-size_t u32toa_radix(char buf[minimum_length(33)], uint32_t n, unsigned int base);
-size_t i32toa_radix(char buf[minimum_length(34)], int32_t n, unsigned base);
-size_t u64toa_radix(char buf[minimum_length(65)], uint64_t n, unsigned int base);
-size_t i64toa_radix(char buf[minimum_length(66)], int64_t n, unsigned int base);
+JS_EXTERN size_t u32toa(char buf[minimum_length(11)], uint32_t n);
+JS_EXTERN size_t i32toa(char buf[minimum_length(12)], int32_t n);
+JS_EXTERN size_t u64toa(char buf[minimum_length(21)], uint64_t n);
+JS_EXTERN size_t i64toa(char buf[minimum_length(22)], int64_t n);
+JS_EXTERN size_t u32toa_radix(char buf[minimum_length(33)], uint32_t n, unsigned int base);
+JS_EXTERN size_t i32toa_radix(char buf[minimum_length(34)], int32_t n, unsigned base);
+JS_EXTERN size_t u64toa_radix(char buf[minimum_length(65)], uint64_t n, unsigned int base);
+JS_EXTERN size_t i64toa_radix(char buf[minimum_length(66)], int64_t n, unsigned int base);
 
-void rqsort(void *base, size_t nmemb, size_t size,
+JS_EXTERN void rqsort(void *base, size_t nmemb, size_t size,
             int (*cmp)(const void *, const void *, void *),
             void *arg);
 
-int64_t js__gettimeofday_us(void);
-uint64_t js__hrtime_ns(void);
+JS_EXTERN int64_t js__gettimeofday_us(void);
+JS_EXTERN uint64_t js__hrtime_ns(void);
 
 static inline size_t js__malloc_usable_size(const void *ptr)
 {
@@ -577,19 +585,19 @@ typedef pthread_mutex_t js_mutex_t;
 typedef pthread_cond_t js_cond_t;
 #endif
 
-void js_once(js_once_t *guard, void (*callback)(void));
+JS_EXTERN void js_once(js_once_t *guard, void (*callback)(void));
 
-void js_mutex_init(js_mutex_t *mutex);
-void js_mutex_destroy(js_mutex_t *mutex);
-void js_mutex_lock(js_mutex_t *mutex);
-void js_mutex_unlock(js_mutex_t *mutex);
+JS_EXTERN void js_mutex_init(js_mutex_t *mutex);
+JS_EXTERN void js_mutex_destroy(js_mutex_t *mutex);
+JS_EXTERN void js_mutex_lock(js_mutex_t *mutex);
+JS_EXTERN void js_mutex_unlock(js_mutex_t *mutex);
 
-void js_cond_init(js_cond_t *cond);
-void js_cond_destroy(js_cond_t *cond);
-void js_cond_signal(js_cond_t *cond);
-void js_cond_broadcast(js_cond_t *cond);
-void js_cond_wait(js_cond_t *cond, js_mutex_t *mutex);
-int js_cond_timedwait(js_cond_t *cond, js_mutex_t *mutex, uint64_t timeout);
+JS_EXTERN void js_cond_init(js_cond_t *cond);
+JS_EXTERN void js_cond_destroy(js_cond_t *cond);
+JS_EXTERN void js_cond_signal(js_cond_t *cond);
+JS_EXTERN void js_cond_broadcast(js_cond_t *cond);
+JS_EXTERN void js_cond_wait(js_cond_t *cond, js_mutex_t *mutex);
+JS_EXTERN int js_cond_timedwait(js_cond_t *cond, js_mutex_t *mutex, uint64_t timeout);
 
 #endif /* !defined(EMSCRIPTEN) && !defined(__wasi__) */
 
