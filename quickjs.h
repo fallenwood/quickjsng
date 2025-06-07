@@ -44,7 +44,7 @@ extern "C" {
 #define JS_EXTERN __attribute__((visibility("default")))
 #else
 #define js_force_inline  inline
-#define JS_EXTERN /* nothing */
+#define JS_EXTERN __declspec(dllexport) /* nothing */
 #endif
 
 /* Borrowed from Folly */
