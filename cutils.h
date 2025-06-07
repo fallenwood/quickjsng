@@ -599,7 +599,7 @@ static inline size_t js__malloc_usable_size(const void *ptr)
 #endif
 }
 
-int js_exepath(char* buffer, size_t* size);
+JS_EXTERN int js_exepath(char* buffer, size_t* size);
 
 /* Cross-platform threading APIs. */
 
@@ -644,9 +644,9 @@ enum {
 };
 
 // creates threads with 2 MB stacks (glibc default)
-int js_thread_create(js_thread_t *thrd, void (*start)(void *), void *arg,
+JS_EXTERN int js_thread_create(js_thread_t *thrd, void (*start)(void *), void *arg,
                      int flags);
-int js_thread_join(js_thread_t thrd);
+JS_EXTERN int js_thread_join(js_thread_t thrd);
 
 #endif /* !defined(EMSCRIPTEN) && !defined(__wasi__) */
 
