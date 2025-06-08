@@ -12,3 +12,6 @@ CMakeUserPresets.json
 fuzz
 .vscode/
 microbench*.txt
+
+linux-arm64/
+linux-x64/
