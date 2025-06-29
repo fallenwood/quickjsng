@@ -15,3 +15,5 @@ microbench*.txt
 
 linux-arm64/
 linux-x64/
+
+zig-out
